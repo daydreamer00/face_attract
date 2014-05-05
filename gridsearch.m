@@ -1,8 +1,8 @@
-function [  ] = gridsearch(featurevector)
+function [  ] = gridsearch(featurevector,quadraticflag)
 %GRIDSEARCH Summary of this function goes here
 %   Detailed explanation goes here
     badpoints = importdata('bad.txt');
-	[train_x, train_y,test_x,test_y,valid_x,valid_y]=buildFeature(featurevector,3,0,badpoints,0);
+	[train_x, train_y,test_x,test_y,valid_x,valid_y]=buildFeature(featurevector,3,quadraticflag,badpoints,0);
     bestcv = Inf;
     for log2c = -4:4,
         for log2g = -15:1
