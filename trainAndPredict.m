@@ -1,4 +1,4 @@
-function [predict] = trainAndPredict(train_x_all,train_y_all,train_size,test_x_all,test_y_all,test_size,modeltype,lambda)
+function [predict] = trainAndPredict(train_x_all,train_y_all,train_size,test_x_all,test_y_all,test_size,modeltype,log2lambda)
 %this function train a model according to the modeltype, output the predict value
 	%train & test: extend this part according to modeltype
 	%test_size = size(test_x,1);%row num
@@ -24,7 +24,7 @@ function [predict] = trainAndPredict(train_x_all,train_y_all,train_size,test_x_a
 		%size_train_x = size(train_x)
 		%train_x=x2fx(train_x,'quadratic');
 		%test_x=x2fx(test_x,'quadratic');
-		lmmdl = ridge( train_y,train_x(:,2:end),lambda,0);
+		lmmdl = ridge( train_y,train_x(:,2:end),2^log2lambda,0);
 		predict = test_x(:,1:end)*lmmdl;
 	end
 	if modeltype==3%livsvm
