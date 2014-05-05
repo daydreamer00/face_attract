@@ -48,6 +48,7 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
     
     %perm = [randperm(230) 231:330]; %randomize train and validation set
     perm = 1:330; %no random
+%     perm = randperm(330); %random all
     perm(ismember(perm,badpoints)) = [];
     features = features(perm,:);
     label = label(perm,:);

@@ -1,4 +1,4 @@
-function [error_rate,error_count,count,wrongpair] = evaluation(test_y,predict_y)
+function [error_rate,error_count,count,wrongpair,mse] = evaluation(test_y,predict_y)
 %the evaluation method is raised by Bug group
 	test_y;
 	predict_y;
@@ -13,8 +13,6 @@ function [error_rate,error_count,count,wrongpair] = evaluation(test_y,predict_y)
                 count = count + 1;
                 result_i = predict_y(i);
                 result_j = predict_y(j);
-                result_d = result_i-result_j;
-                test_y_d = test_y(i) - test_y(j);
                 if (result_i <= result_j && test_y(i) > test_y(j)) || (result_i >= result_j && test_y(i) < test_y(j))
                     error_count = error_count + 1;
 					wrongpair(error_count,:)=[i j];
@@ -23,4 +21,6 @@ function [error_rate,error_count,count,wrongpair] = evaluation(test_y,predict_y)
         end
     end
     error_rate = error_count / count;
+    de = predict_y-test_y;
+    mse = de'*de/len;
 end

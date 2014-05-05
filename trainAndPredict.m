@@ -28,7 +28,7 @@ function [predict] = trainAndPredict(train_x_all,train_y_all,train_size,test_x_a
 		predict = test_x(:,1:end)*lmmdl;
 	end
 	if modeltype==3%livsvm
-		model = svmtrain(train_y,train_x,['-q -s 3 -t 2 -c ', num2str(2^-1), ' -g ', num2str(2^-9)] );
+		model = svmtrain(train_y,train_x,['-q -s 3 -t 2 -c ', num2str(2^0), ' -g ', num2str(2^-7)] );
 		predict = svmpredict(test_y(:,:),test_x(:,:),model,'-q');
 	end
 end
