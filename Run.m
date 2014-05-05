@@ -26,9 +26,7 @@ function [train_error_rate, test_error_rate, cv_error_rate]=Run(featurevector,mo
 %if you want to run svm, should addpath('g11.bug.face.attractiveness.by jkm') and if you cannot support svmtrain and svmpredict in that file, you can addpath('libsvm_bean')
 %if you want to define new feature,you can add them in buildFeature.m(don't forget the comment), define and add to all_features, then expand param 'featurevector'()
 %if you want to define new model, define in 'trainAndPredict.m', if you need some extra processing on data define in buildFeature.m
-       
-    n_cv = 5;
-    
+
     badpoints = importdata(badpoints_filename);
 	[train_x, train_y,test_x,test_y,valid_x,valid_y]=buildFeature(featurevector,modeltype,quadraticflag,badpoints,0);
     %[train_x, train_y,valid_x,valid_y,test_x,test_y]= removebadpoints(train_x, train_y,valid_x,valid_y,test_x,test_y,badpoints);
@@ -53,6 +51,7 @@ function [train_error_rate, test_error_rate, cv_error_rate]=Run(featurevector,mo
     
     sum_err=0;
     for j = 1:100
+        n_cv = 5;
         indices = crossvalind('Kfold',length(train_y),n_cv);
         for i = 1:n_cv
             valid_i = (indices == i);
@@ -63,6 +62,15 @@ function [train_error_rate, test_error_rate, cv_error_rate]=Run(featurevector,mo
             valid_error_count=error_count;
             valid_count=count;
         end
+        
+%         n_cv = 1;
+%         [train_i, valid_i] = crossvalind('LeaveMOut',length(train_y),1);
+%         [predict]=trainAndPredict(train_x(train_i,:),train_y(train_i,:),sum(train_i),train_x(valid_i,:),train_y(valid_i,:),sum(valid_i),modeltype,log2lambda);
+%         [error_rate,error_count,count,wrongpair]=evaluation(train_y(valid_i,:),predict);
+%         sum_err=sum_err+error_rate;
+%         valid_error_count=error_count;
+%         valid_count=count;
+ 
     end
     cv_error_rate = sum_err/n_cv/100
 end
