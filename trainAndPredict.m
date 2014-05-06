@@ -21,11 +21,11 @@ function [predict] = trainAndPredict(train_x_all,train_y_all,train_size,test_x_a
 		% end
 	end
 	if modeltype==2%ridge
-		%size_train_x = size(train_x)
-		%train_x=x2fx(train_x,'quadratic');
-		%test_x=x2fx(test_x,'quadratic');
-		lmmdl = ridge( train_y,train_x(:,2:end),2^log2lambda,0);
+	
+% 		lmmdl = ridge( train_y,train_x(:,2:end),2^log2lambda,0);
+		lmmdl = ridge( train_y,train_x(:,1:end),2^log2lambda);
 		predict = test_x(:,1:end)*lmmdl;
+
 	end
 	if modeltype==3%livsvm
 		model = svmtrain(train_y,train_x,['-q -s 3 -t 2 -c ', num2str(2^0), ' -g ', num2str(2^-7)] );
