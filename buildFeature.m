@@ -8,7 +8,9 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
 	load('landmarks.mat');
     load('labels.mat');
 	label = mean(labels')';
-	%get factors from landmarks, preparation for feature definition(for x-axis: landmarks(:,index*2), for y-axis:landmarks(:,index*2-1))
+%     label = labels(:,1);
+	
+    %get factors from landmarks, preparation for feature definition(for x-axis: landmarks(:,index*2), for y-axis:landmarks(:,index*2-1))
 	faceheight = landmarks(:, 2)-(landmarks(:, 50)+landmarks(:, 142))./2;%F1
     facewidth = landmarks(:, 25) - landmarks(:, 7);%F2
     mouthwidth = landmarks(:, 93) - landmarks(:, 75);%F3
@@ -47,8 +49,8 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
 	
     
     %perm = [randperm(230) 231:330]; %randomize train and validation set
-    perm = 1:330; %no random
-%     perm = randperm(330); %random all
+%     perm = 1:330; %no random
+    perm = randperm(330); %random all
     perm(ismember(perm,badpoints)) = [];
     features = features(perm,:);
     label = label(perm,:);
