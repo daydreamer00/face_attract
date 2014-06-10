@@ -1,6 +1,6 @@
 function [ error_his ] = lambdasearch(featurevector,quadraticflag)
-%GRIDSEARCH Summary of this function goes here
-%   Detailed explanation goes here
+%LAMBDASEARCH Summary of this function goes here
+%   Usage: error_his = lambdasearch([1 1 1 1 1 1 1 1 1 1 1 1 1 1 1],0)
     badpoints = importdata('bad.txt');
     
     bestcv = Inf;
@@ -10,7 +10,7 @@ function [ error_his ] = lambdasearch(featurevector,quadraticflag)
     
     for log2lambda = lambda_range,
         fprintf('log2lambda=%g\n',log2lambda);
-        [train_error_rate, test_error_rate, cv_error_rate,train_mse,test_mse,cv_mse]=Run(featurevector,2,quadraticflag,'bad.txt',log2lambda);
+        [train_error_rate, test_error_rate, cv_error_rate,train_mse,test_mse,cv_mse]=Run(featurevector,2,quadraticflag,'bad.txt',log2lambda,1);
         
 %         if (cv_error_rate < bestcv),
 %             bestcv = cv_error_rate;

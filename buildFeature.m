@@ -8,7 +8,6 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
 	load('landmarks.mat');
     load('labels.mat');
 	label = mean(labels')';
-%     label = labels(:,1);
 	
     %get factors from landmarks, preparation for feature definition(for x-axis: landmarks(:,index*2), for y-axis:landmarks(:,index*2-1))
 	faceheight = landmarks(:, 2)-(landmarks(:, 50)+landmarks(:, 142))./2;%F1
@@ -29,15 +28,35 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
 	eyewidth=(landmarks(:, 51)-landmarks(:, 43)+landmarks(:, 143)-landmarks(:, 135))/2;%F15
 	eyebrowcurvature=(landmarks(:, 159)-landmarks(:, 151))./(landmarks(:, 164)-(landmarks(:, 160)+landmarks(:, 152))/2);%F16
 	
-	%feature definition
-	all_features = [faceheight./facewidth mouthwidth./facewidth jawcurvature pupildis./facewidth eyeheight./faceheight eyebrowwidth./facewidth noseheight./faceheight nosewidth./noseheight midfaceheight./lowfaceheight cheekbonewidth./jawwidth nosewidth./eyewidth nosewidth./mouthwidth eyebrowcurvature eyewidth./eyeheight mouthwidth./mouthheight];
-	%fill features matrix
-	features = [];
-	for i=1:length(featurevector)
-		if featurevector(i)==1
-			features = [features all_features(:,i)];
-		end
-	end
+% 	%feature definition
+% 	all_features = [faceheight./facewidth mouthwidth./facewidth jawcurvature pupildis./facewidth eyeheight./faceheight eyebrowwidth./facewidth noseheight./faceheight nosewidth./noseheight midfaceheight./lowfaceheight cheekbonewidth./jawwidth nosewidth./eyewidth nosewidth./mouthwidth eyebrowcurvature eyewidth./eyeheight mouthwidth./mouthheight];
+% 	
+%     %fill features matrix
+% 	features = [];
+% 	for i=1:length(featurevector)
+% 		if featurevector(i)==1
+% 			features = [features all_features(:,i)];
+% 		end
+%     end
+    
+    features = landmarks;
+    n = size(landmarks,2);
+%     features(:,1:2:end) = (landmarks(:,1:2:end) - repmat(landmarks(:,129),1,n/2));
+%     features(:,2:2:end) = (landmarks(:,2:2:end) - repmat(landmarks(:,130),1,n/2));
+    if(featurevector==0)
+        featurevector = ones(1,n);
+    end
+    features = features(:,logical(featurevector));
+    dists = [];
+    for i = 1:n/2
+        for j = i+1:n/2
+            xdev = features(:,2*i-1) - features(:,2*j-1);
+            ydev = features(:,2*i) - features(:,2*j);
+            dists = [dists sqrt(xdev.*xdev+ydev.*ydev)];
+        end
+    end
+    features = dists;
+    
 	%TODO quadratic
 	if quadraticflag==3
 		features = x2fx(features,'quadratic');
@@ -49,8 +68,8 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
 	
     
     %perm = [randperm(230) 231:330]; %randomize train and validation set
-%     perm = 1:330; %no random
-    perm = randperm(330); %random all
+    perm = 1:330; %no random
+%     perm = randperm(330); %random all
     perm(ismember(perm,badpoints)) = [];
     features = features(perm,:);
     label = label(perm,:);
@@ -71,10 +90,11 @@ function [train_x, train_y,test_x,test_y,valid_x,valid_y] = buildFeature(feature
     test_y = label(train_size+valid_size+1:end,:);
     valid_y = label(train_size+1:train_size+valid_size,:);
 	%extra operation for model:  e.g standardize ?,libsvmwrite,sparse...
+    
 	if modeltype==2
 		[train_x mean_a std_a] = standardize(train_x);
 		test_x = standardize_test(test_x,mean_a,std_a);
-	end
+    end
 	if modeltype==3  %libsvm
 		[train_x mean_a std_a] = standardize(train_x);
 		test_x = standardize_test(test_x,mean_a,std_a);

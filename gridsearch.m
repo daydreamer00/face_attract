@@ -1,11 +1,11 @@
 function [ error_his ] = gridsearch(featurevector,quadraticflag)
-%GRIDSEARCH Summary of this function goes here
-%   Detailed explanation goes here
+%GRIDSEARCH 
+%  Usage: error_his = gridsearch([1 1 1 1 1 1 1 1 1 1 1 1 1 1 1],0)
     badpoints = importdata('bad.txt');
 	[train_x, train_y,test_x,test_y,valid_x,valid_y]=buildFeature(featurevector,3,quadraticflag,badpoints,0);
     bestcv = Inf;
     
-    c_range = -4:4;
+    c_range = 0:10;
     g_range = -15:1;
     error_his = zeros(length(c_range),length(g_range));
     for log2c = c_range,
